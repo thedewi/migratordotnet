@@ -12,4 +12,5 @@
 /src/Migrator.Tests/obj/
 /src/Migrator/bin/
 /src/Migrator/obj/
+/build/
 /.vs/
