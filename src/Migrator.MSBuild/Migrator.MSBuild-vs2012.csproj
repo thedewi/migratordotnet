@@ -46,13 +46,13 @@
     <None Include="Migrator.Targets" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Migrator\Migrator-vs2008.csproj">
+    <ProjectReference Include="..\Migrator\Migrator-vs2012.csproj">
       <Project>{1FEE70A4-AAD7-4C60-BE60-3F7DC03A8C4D}</Project>
-      <Name>Migrator-vs2008</Name>
+      <Name>Migrator-vs2012</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Migrator.Framework\Migrator.Framework-vs2008.csproj">
+    <ProjectReference Include="..\Migrator.Framework\Migrator.Framework-vs2012.csproj">
       <Project>{5270F048-E580-486C-B14C-E5B9F6E539D4}</Project>
-      <Name>Migrator.Framework-vs2008</Name>
+      <Name>Migrator.Framework-vs2012</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
