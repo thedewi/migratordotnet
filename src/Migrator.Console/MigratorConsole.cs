@@ -10,8 +10,10 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Reflection;
 using Migrator.Framework;
+using Migrator.Framework.Loggers;
 using Migrator.Tools;
 using System.Collections.Generic;
 
@@ -30,6 +32,7 @@ namespace Migrator.MigratorConsole
 		private bool _trace = false;
 		private bool _dryrun = false;
 		private string _dumpTo;
+		private string _scriptTo;
 		private long _migrateTo = -1;
 		private string[] args;
 		
@@ -81,6 +84,11 @@ namespace Migrator.MigratorConsole
 			CheckArguments();
 			
 			Migrator mig = GetMigrator();
+
+			var originalLogger = mig.Logger;
+			if (null != _scriptTo)
+				mig.Logger = new SqlScriptFileLogger(mig.Logger, new StreamWriter(_scriptTo));
+
             if (mig.DryRun)
                 mig.Logger.Log("********** Dry run! Not actually applying changes. **********");
 
@@ -88,6 +96,12 @@ namespace Migrator.MigratorConsole
 				mig.MigrateToLastVersion();
 			else
 				mig.MigrateTo(_migrateTo);
+
+			if (null != _scriptTo) {
+				if (mig.Logger is IDisposable)
+					((IDisposable) mig.Logger).Dispose();
+				mig.Logger = originalLogger;
+			}
 		}
 		
 		/// <summary>
@@ -141,6 +155,7 @@ namespace Migrator.MigratorConsole
 			Console.WriteLine("\t-{0}{1}", "list".PadRight(tab), "List migrations");
 			Console.WriteLine("\t-{0}{1}", "trace".PadRight(tab), "Show debug informations");
 			Console.WriteLine("\t-{0}{1}", "dump FILE".PadRight(tab), "Dump the database schema as migration code");
+			Console.WriteLine("\t-{0}{1}", "script FILE".PadRight(tab), "Produce an SQL script");
 			Console.WriteLine("\t-{0}{1}", "dryrun".PadRight(tab), "Simulation mode (don't actually apply/remove any migrations)");
 			Console.WriteLine();
 		}
@@ -188,6 +203,11 @@ namespace Migrator.MigratorConsole
 				else if (argv[i].Equals("-dump"))
 				{
 					_dumpTo = argv[i+1];
+					i++;
+				}
+				else if (argv[i].Equals("-script"))
+				{
+					_scriptTo = argv[i+1];
 					i++;
 				}
 				else

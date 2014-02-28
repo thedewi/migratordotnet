@@ -47,6 +47,7 @@ namespace Migrator.Framework.Loggers
         {
             _innerLogger.ApplyingDBChange(sql);
             _streamWriter.WriteLine(sql);
+			_streamWriter.Flush();
         }
 
         public void Started(List<long> appliedVersions, long finalVersion)
@@ -57,11 +58,17 @@ namespace Migrator.Framework.Loggers
         public void MigrateUp(long version, string migrationName)
         {
             _innerLogger.MigrateUp(version, migrationName);
+	        _streamWriter.WriteLine();
+			_streamWriter.WriteLine("-- Applying {0}: {1}", version.ToString(), migrationName);
+			_streamWriter.Flush();
         }
 
         public void MigrateDown(long version, string migrationName)
         {
             _innerLogger.MigrateDown(version, migrationName);
+			_streamWriter.WriteLine();
+			_streamWriter.WriteLine("-- Removing {0}: {1}", version.ToString(), migrationName);
+	        _streamWriter.Flush();
         }
 
         public void Skipping(long version)
