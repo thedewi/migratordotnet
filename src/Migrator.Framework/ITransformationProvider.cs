@@ -21,6 +21,8 @@ namespace Migrator.Framework
         
         ILogger Logger { get; set; }
 
+        bool DryRun { get; set; }
+
         /// <summary>
         /// Add a column to an existing table
         /// </summary>

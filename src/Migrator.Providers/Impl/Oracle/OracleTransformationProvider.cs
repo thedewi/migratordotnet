@@ -13,7 +13,6 @@ namespace Migrator.Providers.Oracle
         {
             _connection = new OracleConnection();
             _connection.ConnectionString = _connectionString;
-            _connection.Open();
         }
 
         public override void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable,

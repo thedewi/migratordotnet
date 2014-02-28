@@ -53,6 +53,8 @@ namespace Migrator.Providers
 			set { _logger = value; }
 		}
 
+		public virtual bool DryRun { get; set; }
+
 		public Dialect Dialect
 		{
 			get { return _dialect; }
@@ -572,6 +574,8 @@ namespace Migrator.Providers
 		{
             Logger.Trace(sql);
             Logger.ApplyingDBChange(sql);
+			if (DryRun)
+				return 0;
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -586,6 +590,7 @@ namespace Migrator.Providers
 
 		private IDbCommand BuildCommand(string sql)
 		{
+            EnsureHasConnection();
 			IDbCommand cmd = _connection.CreateCommand();
 			cmd.CommandText = sql;
 			cmd.CommandType = CommandType.Text;
@@ -604,6 +609,8 @@ namespace Migrator.Providers
 		public IDataReader ExecuteQuery(string sql)
 		{
             Logger.Trace(sql);
+			if (DryRun)
+				return new DataTableReader(new DataTable());
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -619,6 +626,8 @@ namespace Migrator.Providers
 		public object ExecuteScalar(string sql)
 		{
             Logger.Trace(sql);
+			if (DryRun)
+				return 0;
 			IDbCommand cmd = BuildCommand(sql);
 			try
 			{
@@ -701,7 +710,7 @@ namespace Migrator.Providers
 		/// </summary>
 		public void BeginTransaction()
 		{
-			if (_transaction == null && _connection != null)
+			if (_transaction == null && _connection != null && !DryRun)
 			{
 				EnsureHasConnection();
 				_transaction = _connection.BeginTransaction(IsolationLevel.ReadCommitted);
@@ -710,7 +719,7 @@ namespace Migrator.Providers
 
 		protected void EnsureHasConnection()
 		{
-			if (_connection.State != ConnectionState.Open)
+			if (_connection.State != ConnectionState.Open && !DryRun)
 			{
 				_connection.Open();
 			}
@@ -764,12 +773,12 @@ namespace Migrator.Providers
 				if(_appliedMigrations == null)
 				{
 					_appliedMigrations = new List<long>();
-					CreateSchemaInfoTable();
-					using(IDataReader reader = Select("version","SchemaInfo")){
-						while(reader.Read()){
-							_appliedMigrations.Add(reader.GetInt64(0));
+					if (TableExists("SchemaInfo"))
+						using(IDataReader reader = Select("version","SchemaInfo")){
+							while(reader.Read()){
+								_appliedMigrations.Add(reader.GetInt64(0));
+							}
 						}
-					}
 				}
 				return _appliedMigrations;
 			}
@@ -800,7 +809,7 @@ namespace Migrator.Providers
 		protected void CreateSchemaInfoTable()
 		{
 			EnsureHasConnection();
-			if (!TableExists("SchemaInfo"))
+			if (!TableExists("SchemaInfo") && !DryRun)
 			{
 				AddTable("SchemaInfo", new Column("Version", DbType.Int64, ColumnProperty.PrimaryKey));
 			}

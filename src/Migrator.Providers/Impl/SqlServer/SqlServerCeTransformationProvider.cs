@@ -33,7 +33,6 @@ namespace Migrator.Providers.SqlServer
 		{
 			_connection = new SqlCeConnection();
 			_connection.ConnectionString = _connectionString;
-			_connection.Open();
 		}
 
 		public override bool ConstraintExists(string table, string name)

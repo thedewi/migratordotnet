@@ -24,6 +24,8 @@ namespace Migrator.Providers
             set { }
         }
         
+        public bool DryRun { get; set; }
+
         public Dialect Dialect
         {
             get { return null; }

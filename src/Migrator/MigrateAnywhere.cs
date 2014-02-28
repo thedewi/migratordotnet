@@ -74,26 +74,22 @@ namespace Migrator
         {
             // we're adding this one
             _logger.MigrateUp(Current, migration.Name);
-            if(! DryRun)
-            {
-                migration.Up();
-                _provider.MigrationApplied(attr.Version);
+            migration.Up();
+            _provider.MigrationApplied(attr.Version);
+            if (!DryRun)
                 _provider.Commit();
-                migration.AfterUp();
-            }
+            migration.AfterUp();
         }
 
         private void RemoveMigration(IMigration migration, MigrationAttribute attr)
         {
             // we're removing this one
             _logger.MigrateDown(Current, migration.Name);
-            if (! DryRun)
-            {
-                migration.Down();
-                _provider.MigrationUnApplied(attr.Version);
+            migration.Down();
+            _provider.MigrationUnApplied(attr.Version);
+            if (!DryRun)
                 _provider.Commit();
-                migration.AfterDown();
-            }
+            migration.AfterDown();
         }
     }
 }

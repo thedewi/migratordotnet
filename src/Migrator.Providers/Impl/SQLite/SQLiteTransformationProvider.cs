@@ -21,7 +21,6 @@ namespace Migrator.Providers.SQLite
         {
             _connection = new SqliteConnection(_connectionString);
             _connection.ConnectionString = _connectionString;
-            _connection.Open();
         }
 
         public override void AddForeignKey(string name, string primaryTable, string[] primaryColumns, string refTable,
