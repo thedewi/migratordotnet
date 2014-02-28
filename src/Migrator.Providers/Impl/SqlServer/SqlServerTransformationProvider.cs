@@ -34,7 +34,6 @@ namespace Migrator.Providers.SqlServer
     	{
     		_connection = new SqlConnection();
     		_connection.ConnectionString = _connectionString;
-    		_connection.Open();
     	}
 
         // FIXME: We should look into implementing this with INFORMATION_SCHEMA if possible

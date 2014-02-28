@@ -29,7 +29,6 @@ namespace Migrator.Providers.PostgreSQL
         {
             _connection = new NpgsqlConnection();
             _connection.ConnectionString = _connectionString;
-            _connection.Open();
         }
         
         public override void RemoveTable(string name)

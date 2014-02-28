@@ -16,7 +16,6 @@ namespace Migrator.Providers.Mysql
         {
             _connection = new MySqlConnection(_connectionString);
             _connection.ConnectionString = _connectionString;
-            _connection.Open();
         }
 
         public override void RemoveForeignKey(string table, string name)

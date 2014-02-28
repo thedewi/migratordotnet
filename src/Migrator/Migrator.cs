@@ -29,7 +29,6 @@ namespace Migrator
         private readonly MigrationLoader _migrationLoader;
 
         private ILogger _logger = new Logger(false);
-        protected bool _dryrun;
         private string[] _args;
 
         public string[] args
@@ -108,8 +107,8 @@ namespace Migrator
 
         public virtual bool DryRun
         {
-            get { return _dryrun; }
-            set { _dryrun = value; }
+            get { return _provider.DryRun; }
+            set { _provider.DryRun = value; }
         }
 
         /// <summary>
