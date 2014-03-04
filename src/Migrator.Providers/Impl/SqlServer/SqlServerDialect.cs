@@ -42,7 +42,7 @@ namespace Migrator.Providers.SqlServer
 
         public override Type TransformationProvider { get { return typeof(SqlServerTransformationProvider); } }
 
-        public override bool SupportsIndex
+        public override bool SupportsIndexOnCreateTable
         {
             get { return false; }
         }

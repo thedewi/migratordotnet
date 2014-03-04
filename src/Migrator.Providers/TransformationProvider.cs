@@ -217,6 +217,12 @@ namespace Migrator.Providers
             {
                 AddPrimaryKey(String.Format("PK_{0}", name), name, pks.ToArray());
             }
+
+            // Add indexes that were unsupported on create table
+            foreach (var column in columns) {
+                if (!Dialect.SupportsIndexOnCreateTable && column.IsIndexed)
+                    AddIndex(string.Format("IX_{0}_{1}", name, column.Name), name, column.Name);
+            }
         }
 
 		public List<string> GetPrimaryKeys(IEnumerable<Column> columns)
