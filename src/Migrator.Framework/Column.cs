@@ -122,5 +122,10 @@ namespace Migrator.Framework
         {
             get { return (ColumnProperty & ColumnProperty.PrimaryKey) == ColumnProperty.PrimaryKey; }
         }
+
+        public bool IsIndexed
+        {
+            get { return (ColumnProperty & ColumnProperty.Indexed) == ColumnProperty.Indexed; }
+        }
     }
 }

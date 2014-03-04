@@ -68,7 +68,7 @@ namespace Migrator.Providers
         {
             get
             {
-                if (dialect.SupportsIndex && indexed)
+                if (dialect.SupportsIndexOnCreateTable && indexed)
                     return String.Format("INDEX({0})", dialect.Quote(name));
                 return null;
             }

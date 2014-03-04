@@ -169,7 +169,7 @@ namespace Migrator.Providers
             get { return true; }
         }
 
-        public virtual bool SupportsIndex
+        public virtual bool SupportsIndexOnCreateTable
         {
             get { return true; }
         }

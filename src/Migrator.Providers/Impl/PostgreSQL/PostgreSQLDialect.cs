@@ -55,5 +55,10 @@ namespace Migrator.Providers.PostgreSQL
         {
             get { return false; }
         }
+
+        public override bool SupportsIndexOnCreateTable
+        {
+            get { return false; }
+        }
     }
 }
