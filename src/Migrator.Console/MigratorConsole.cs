@@ -31,6 +31,7 @@ namespace Migrator.MigratorConsole
 		private bool _list = false;
 		private bool _trace = false;
 		private bool _dryrun = false;
+		private bool _reapplyLatest = false;
 		private string _dumpTo;
 		private string _scriptTo;
 		private long _migrateTo = -1;
@@ -58,6 +59,8 @@ namespace Migrator.MigratorConsole
 					List();
 				else if (_dumpTo != null)
 					Dump();
+                else if (_reapplyLatest)
+                    ReapplyLatest();
 				else
 					Migrate();
 			}
@@ -135,6 +138,27 @@ namespace Migrator.MigratorConsole
 			dumper.DumpTo(_dumpTo);
 		}
 		
+		public void ReapplyLatest()
+		{
+			CheckArguments();
+
+			var appliedMigrations = GetMigrator().AppliedMigrations;
+
+			if (appliedMigrations.Count < 1) {
+				Console.WriteLine("Nothing to reapply.");
+				return;
+			}
+
+			var latest = appliedMigrations[appliedMigrations.Count - 1];
+			var previous = (appliedMigrations.Count >= 2)
+							   ? appliedMigrations[appliedMigrations.Count - 2]
+							   : 0;
+			_migrateTo = previous;
+			Migrate();
+			_migrateTo = latest;
+			Migrate();
+		}
+
 		/// <summary>
 		/// Show usage information and help.
 		/// </summary>
@@ -157,6 +181,7 @@ namespace Migrator.MigratorConsole
 			Console.WriteLine("\t-{0}{1}", "dump FILE".PadRight(tab), "Dump the database schema as migration code");
 			Console.WriteLine("\t-{0}{1}", "script FILE".PadRight(tab), "Produce an SQL script");
 			Console.WriteLine("\t-{0}{1}", "dryrun".PadRight(tab), "Simulation mode (don't actually apply/remove any migrations)");
+	        Console.WriteLine("\t-{0}{1}", "reapplylatest".PadRight(tab), "Remove the latest applied migration and re-apply it");
 			Console.WriteLine();
 		}
 		
@@ -194,6 +219,10 @@ namespace Migrator.MigratorConsole
 				else if (argv[i].Equals("-dryrun"))
 				{
 					_dryrun = true;
+				}
+				else if (argv[i].Equals("-reapplylatest"))
+				{
+                    _reapplyLatest = true;
 				}
 				else if (argv[i].Equals("-version"))
 				{
