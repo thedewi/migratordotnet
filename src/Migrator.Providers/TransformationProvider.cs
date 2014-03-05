@@ -204,7 +204,7 @@ namespace Migrator.Providers
             {
                 // Remove the primary key notation if compound primary key because we'll add it back later
                 if (compoundPrimaryKey && column.IsPrimaryKey)
-                    column.ColumnProperty = ColumnProperty.Unsigned | ColumnProperty.NotNull;
+                    column.ColumnProperty = column.ColumnProperty & ~ColumnProperty.PrimaryKeyBase;
 
                 ColumnPropertiesMapper mapper = _dialect.GetAndMapColumnProperties(column);
                 columnProviders.Add(mapper);
@@ -219,10 +219,9 @@ namespace Migrator.Providers
             }
 
             // Add indexes that were unsupported on create table
-            foreach (var column in columns) {
+            foreach (var column in columns)
                 if (!Dialect.SupportsIndexOnCreateTable && column.IsIndexed)
                     AddIndex(string.Format("IX_{0}_{1}", name, column.Name), name, column.Name);
-            }
         }
 
 		public List<string> GetPrimaryKeys(IEnumerable<Column> columns)
