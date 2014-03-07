@@ -110,7 +110,7 @@ namespace Migrator.Providers
         private void AddValueIfSelected(Column column, ColumnProperty property, ICollection<string> vals)
         {
             if (PropertySelected(column.ColumnProperty, property))
-                vals.Add(dialect.SqlForProperty(property));
+                vals.Add(dialect.SqlForProperty(column, property));
         }
 
         public static bool PropertySelected(ColumnProperty source, ColumnProperty comparison)
