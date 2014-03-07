@@ -60,5 +60,12 @@ namespace Migrator.Providers.PostgreSQL
         {
             get { return false; }
         }
-    }
+
+	    public override string SqlForProperty(Column column, ColumnProperty property)
+	    {
+	        if (ColumnProperty.Identity == property && DbType.Int64 == column.Type)
+	            return "bigserial";
+	        return base.SqlForProperty(column, property);
+	    }
+	}
 }
