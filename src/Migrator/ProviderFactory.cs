@@ -43,6 +43,8 @@ namespace Migrator
         public static ITransformationProvider Create(string providerName, string connectionString)
         {
             object dialectInstance = DialectForProvider(providerName);
+            if (null == dialectInstance)
+                throw new Exception(string.Format("Provider '{0}' not recognized.", providerName));
             MethodInfo mi = dialectInstance.GetType().GetMethod("NewProviderForDialect", new Type[] {typeof (String)});
             return (ITransformationProvider)mi.Invoke(dialectInstance, new object[] { connectionString });
         }
@@ -54,7 +56,7 @@ namespace Migrator
 
             foreach (string key in dialects.Keys)
             {
-                if (0 < key.IndexOf(providerName, StringComparison.InvariantCultureIgnoreCase))
+                if (0 <= key.IndexOf(providerName, StringComparison.InvariantCultureIgnoreCase))
                     return dialects[key];
             }
             return null;
