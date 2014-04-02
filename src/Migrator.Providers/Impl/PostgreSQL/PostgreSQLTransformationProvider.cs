@@ -39,7 +39,7 @@ namespace Migrator.Providers.PostgreSQL
         public override bool ConstraintExists(string table, string name)
         {
             using (IDataReader reader =
-                ExecuteQuery(string.Format("SELECT constraint_name FROM information_schema.table_constraints WHERE table_schema = 'public' AND constraint_name = lower('{0}')", name)))
+                ExecuteQuery(string.Format("SELECT constraint_name FROM information_schema.table_constraints WHERE table_schema = 'public' AND constraint_name = lower('{0}') AND table_name = lower('{1}')", name, table)))
             {
                 return reader.Read();
             }
@@ -48,7 +48,7 @@ namespace Migrator.Providers.PostgreSQL
 		public override bool IndexExists(string table, string name)
 		{
 			using (IDataReader reader =
-				ExecuteQuery(string.Format("SELECT indexname FROM pg_catalog.pg_indexes WHERE indexname = lower('{0}')", name)))
+				ExecuteQuery(string.Format("SELECT indexname FROM pg_catalog.pg_indexes WHERE indexname = lower('{0}') AND tablename = lower('{1}')", name, table)))
 			{
 				return reader.Read();
 			}
