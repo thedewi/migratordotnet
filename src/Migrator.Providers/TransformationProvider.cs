@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Migrator.Framework;
 using Migrator.Framework.SchemaBuilder;
 using ForeignKeyConstraint = Migrator.Framework.ForeignKeyConstraint;
@@ -785,7 +786,7 @@ namespace Migrator.Providers
 							}
 						}
 				}
-				return _appliedMigrations;
+				return _appliedMigrations = _appliedMigrations.OrderBy(v => v).ToList();
 			}
 		}
 		
